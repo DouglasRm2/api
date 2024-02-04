@@ -12,10 +12,6 @@ if (typeof window !== 'undefined') {
  providedIn: 'root'
 })
 
-
-
-
-
 export class ServiceBinanceService {
  private apiUrl = 'wss://stream.binance.com:9443/ws/';
 

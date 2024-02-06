@@ -1,12 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { ServiceBinanceService } from '../service/service-binance.service';
-import { AppComponent } from '../app.component';
+
 
 
 @Component({
   selector: 'monitor',
   standalone: true,
-  imports: [AppComponent],
+  imports: [],
   providers:[ServiceBinanceService],
   templateUrl: './monitor.component.html',
   styleUrl: './monitor.component.css'

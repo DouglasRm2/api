@@ -11,23 +11,9 @@ import { AppComponent } from '../app.component';
   styleUrl: './monitor.component.css'
 })
 export class MonitorComponent implements OnInit {
+  ngOnInit(): void {
+    throw new Error('Method not implemented.');
+  }
   tickerData: any;
   serviceBinance: any;
-  ngOnInit(): void {
-    this.tickerData = this.serviceBinance.getTickerPrice('btcusdt').subscribe(
-      (      data: { s: string; a: string; }) => {
-        
-        console.clear();
-        console.log(`conexão feita com sucesso`);
-        console.log("Crypto:" + data.s),
-        console.log('Preço do Ticker:',  parseFloat(data.a).toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 }));
-            /* console.log('Dados recebidos:', data); */
-            this.tickerData = data;
-            /*                                               */
-           
-      },
-  )}
-
- 
-
 }

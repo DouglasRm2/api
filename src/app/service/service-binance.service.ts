@@ -13,6 +13,7 @@ if (typeof window !== 'undefined') {
 })
 
 export class ServiceBinanceService {
+ [x: string]: any;
  private apiUrl = 'wss://stream.binance.com:9443/ws/';
 
  constructor() { }

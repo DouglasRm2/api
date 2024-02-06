@@ -1,19 +1,33 @@
-import { CommonModule } from '@angular/common';
-import { Component, OnInit,  } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { ServiceBinanceService } from '../service/service-binance.service';
 import { AppComponent } from '../app.component';
 
 
 @Component({
-  selector: 'app-monitor',
+  selector: 'monitor',
   standalone: true,
-  imports: [CommonModule,AppComponent],
+  imports: [AppComponent],
+  providers:[ServiceBinanceService],
   templateUrl: './monitor.component.html',
   styleUrl: './monitor.component.css'
 })
+
+
 export class MonitorComponent implements OnInit {
-  ngOnInit(): void {
-    throw new Error('Method not implemented.');
+  
+  monitor_de_dados: any;
+
+  constructor(private ExibirDados: ServiceBinanceService) {}
+
+
+  ngOnInit(): void{
+    this.ExibirDados.getTickerPrice('BTCUSDT').subscribe(
+      (data: any) => {
+        this.monitor_de_dados = data;
+      },
+      (error: any) => {
+        console.error('Erro ao receber dados do ticker:', error);
+      }
+    );
   }
-  tickerData: any;
-  serviceBinance: any;
 }

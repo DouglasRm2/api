@@ -23,7 +23,13 @@ export class MonitorComponent implements OnInit {
   ngOnInit(): void{
     this.ExibirDados.getTickerPrice('BTCUSDT').subscribe(
       (data: any) => {
+
+        
+        data.a = parseFloat(data.a).toLocaleString('pt-BR', { minimumFractionDigits: 3, maximumFractionDigits: 3 });
+        
+
         this.monitor_de_dados = data;
+        
       },
       (error: any) => {
         console.error('Erro ao receber dados do ticker:', error);

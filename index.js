@@ -1,5 +1,8 @@
 const WebSocket = require('ws');
 
+const cors = require ('cors')
+app.use(cors());
+
 const SYMBOL = "btcusdt";
 
 const ws = new WebSocket(`wss://stream.binance.com:9443/ws/${SYMBOL.toLowerCase()}@ticker`);

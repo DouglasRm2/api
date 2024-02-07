@@ -1,7 +1,6 @@
 const WebSocket = require('ws');
 
-const cors = require ('cors')
-app.use(cors());
+
 
 const SYMBOL = "btcusdt";
 

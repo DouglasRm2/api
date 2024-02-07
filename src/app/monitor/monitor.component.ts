@@ -32,7 +32,7 @@ export class MonitorComponent implements OnInit {
         
       },
       (error: any) => {
-        console.error('Erro ao receber dados do ticker:', error);
+      return  error;
       }
     );
   }

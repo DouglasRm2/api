@@ -33,13 +33,6 @@ export class MonitorComponent implements OnInit {
 
 
           },
-
-
-
-
-
-
-
       (error: any) => {
       return  error;
       }

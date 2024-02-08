@@ -4,13 +4,14 @@ import { RouterOutlet } from '@angular/router';
 
 import { ServiceBinanceService } from './service/service-binance.service';
 import { MonitorComponent } from './monitor/monitor.component';
-import { TelaComponent } from './tela/tela.component';
+import { GraficoApexComponent } from './grafico-apex/grafico-apex.component';
+
 
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet,MonitorComponent,TelaComponent],
+  imports: [RouterOutlet,MonitorComponent,GraficoApexComponent],
   providers:[ServiceBinanceService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'

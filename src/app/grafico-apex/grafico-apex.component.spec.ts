@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { TelaComponent } from './tela.component';
+import { GraficoApexComponent } from './grafico-apex.component';
 
-describe('TelaComponent', () => {
-  let component: TelaComponent;
-  let fixture: ComponentFixture<TelaComponent>;
+describe('GraficoApexComponent', () => {
+  let component: GraficoApexComponent;
+  let fixture: ComponentFixture<GraficoApexComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [TelaComponent]
+      imports: [GraficoApexComponent]
     })
     .compileComponents();
     
-    fixture = TestBed.createComponent(TelaComponent);
+    fixture = TestBed.createComponent(GraficoApexComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

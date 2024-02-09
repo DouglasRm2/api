@@ -12,7 +12,7 @@ export class Binanceservico {
  constructor(private http: HttpClient) {}
 
  getChartData(symbol: string): Observable<any> {
-   const url = `${this.apiUrl}?symbol=${symbol}&interval=4m`;
+   const url = `${this.apiUrl}?symbol=${symbol}&interval=1d`;
    return this.http.get(url);
  }
 }

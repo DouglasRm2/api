@@ -28,31 +28,45 @@ export class GraficoApexComponent implements OnInit {
   ngOnInit(): void {
     this.binance.getChartData('BTCUSDT').subscribe(
       (data: any[]) => {
+
+
+
+        
         this.chartOptions = {
           series: [{
             name: 'BTCUSDT',
             data: data.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])])
           }],
           chart: {
-            type: "area",
-            height: 350,
+            type: "line",
+            height: 310,
+            width:890,
             zoom: {
               enabled: false
             }
           },
+          dataLabels: {
+            enabled: false
+          },
+          stroke: {
+            curve: "smooth", // Ou "straight" para linhas retas
+            width: 2 // Largura da linha do gráfico
+          },
+    
+          title: {
+            text: "Fundamental Analysis of Stocks",
+            align: "left"
+          },
+          subtitle: {
+            text: "Price Movements",
+            align: "left"
+          },
+         
           xaxis: {
-            type: 'datetime'
+            type: "datetime"
           },
           yaxis: {
             opposite: true
-          },
-          title: {
-            text: 'Price Movements',
-            align: 'left'
-          },
-          subtitle: {
-            text: 'moedas',
-            align: 'left'
           },
           legend: {
             horizontalAlign: "left"

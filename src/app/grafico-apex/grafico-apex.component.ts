@@ -26,33 +26,42 @@ export class GraficoApexComponent implements OnInit {
   constructor(private binance: Binanceservico) {}
 
   ngOnInit(): void {
-    this.binance.getChartData('BTCUSDT').subscribe(
-      (data: any[]) => {
-
-
-
-        
+    // Método para atualizar o gráfico com base nos novos dados recebidos
+    const atualizarGraficoComNovosDados = (novosDados: any[]) => {
+      if (novosDados && novosDados.length > 0) {
         this.chartOptions = {
           series: [{
-            name: 'BTCUSDT',
-            data: data.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])])
-          }],
-          chart: {
-            type: "line",
-            height: 310,
-            width:890,
+            data: novosDados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
+            color: "#3bf227", 
+            type: "area", 
+            zIndex: 1,
             zoom: {
               enabled: false
+            },
+          }],
+          chart: {
+            height: 350,
+            width: 610,    
+            animations: {
+              enabled: true,
+              easing: 'easeinout',
+              speed: 100,
+              animateGradually: {
+                enabled: true,
+                delay: 150
+              },
+              dynamicAnimation: {
+                enabled: true,
+                speed: 350
+              }
             }
           },
           dataLabels: {
             enabled: false
           },
           stroke: {
-            curve: "smooth", // Ou "straight" para linhas retas
-            width: 2 // Largura da linha do gráfico
+            curve: "straight"
           },
-    
           title: {
             text: "Fundamental Analysis of Stocks",
             align: "left"
@@ -61,7 +70,6 @@ export class GraficoApexComponent implements OnInit {
             text: "Price Movements",
             align: "left"
           },
-         
           xaxis: {
             type: "datetime"
           },
@@ -72,9 +80,26 @@ export class GraficoApexComponent implements OnInit {
             horizontalAlign: "left"
           }
         };
+      }
+    };
+
+    // Solicita os dados iniciais do gráfico
+    this.binance.getChartData('BTCUSDT').subscribe(
+      (dadosIniciais: any[]) => {
+        atualizarGraficoComNovosDados(dadosIniciais);
       },
       error => {
-        console.error('Erro ao fazer solicitação para BTCUSDT:', error);
+        console.error('Erro ao obter dados iniciais do gráfico:', error);
+      }
+    );
+
+    // Subscreve-se para receber notificações sobre novos dados da API da Binance
+    this.binance.novosDadosDisponiveis.subscribe(
+      (novosDados: any[]) => {
+        atualizarGraficoComNovosDados(novosDados);
+      },
+      error => {
+        console.error('Erro ao receber novos dados do serviço:', error);
       }
     );
   }

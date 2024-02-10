@@ -3,6 +3,7 @@ import { Component, OnInit,ViewChild } from '@angular/core';
 import { NgxApexchartsModule } from 'ngx-apexcharts';
 import { Binanceservico } from '../service/grafico-binance.service';
 import { CommonModule } from '@angular/common';
+import { clear } from 'console';
 
  
 
@@ -26,17 +27,24 @@ export class GraficoApexComponent implements OnInit {
   constructor(private binance: Binanceservico) {}
 
   ngOnInit(): void {
+
+
     // Método para atualizar o gráfico com base nos novos dados recebidos
-    const atualizarGraficoComNovosDados = (novosDados: any[]) => {
-      if (novosDados && novosDados.length > 0) {
+    const atualizarGraficoComNovosDados = (dados: any[]) => {
+      if (dados && dados.length > 0) {
+      
+            
         this.chartOptions = {
           series: [{
-            data: novosDados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
+            data: dados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
+
+
+            
             color: "#3bf227", 
             type: "area", 
             zIndex: 1,
             zoom: {
-              enabled: false
+            enabled: false
             },
           }],
           chart: {
@@ -103,4 +111,4 @@ export class GraficoApexComponent implements OnInit {
       }
     );
   }
-}
+}  

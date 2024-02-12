@@ -1,9 +1,8 @@
 
-import { Component, OnInit,ViewChild } from '@angular/core';
-import { NgxApexchartsModule } from 'ngx-apexcharts';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
 import { Binanceservico } from '../service/grafico-binance.service';
 import { CommonModule } from '@angular/common';
-import { clear } from 'console';
 
  
 
@@ -20,8 +19,10 @@ import { clear } from 'console';
 
 
 
-
 export class GraficoApexComponent implements OnInit {
+  @ViewChild('chart')
+  chart!: ChartComponent;
+  
   chartOptions: any;
 
   constructor(private binance: Binanceservico) {}
@@ -29,69 +30,38 @@ export class GraficoApexComponent implements OnInit {
   ngOnInit(): void {
 
 
+    
     // Método para atualizar o gráfico com base nos novos dados recebidos
-    const atualizarGraficoComNovosDados = (dados: any[]) => {
-      if (dados && dados.length > 0) {
+
+    const atualizarGraficoComNovosDados = (Vdados: any[]) => {
+      if (Vdados && Vdados.length > 0) {
       
             
         this.chartOptions = {
           series: [{
-            data: dados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
-
-
+            name: [``],
             
-            color: "#3bf227", 
-            type: "area", 
-            zIndex: 1,
-            zoom: {
-            enabled: false
-            },
-          }],
-          chart: {
-            height: 350,
-            width: 610,    
-            animations: {
-              enabled: true,
-              easing: 'easeinout',
-              speed: 100,
-              animateGradually: {
-                enabled: true,
-                delay: 150
-              },
-              dynamicAnimation: {
-                enabled: true,
-                speed: 350
-              }
-            }
-          },
-          dataLabels: {
-            enabled: false
-          },
-          stroke: {
-            curve: "straight"
-          },
-          title: {
-            text: "Fundamental Analysis of Stocks",
-            align: "left"
-          },
-          subtitle: {
-            text: "Price Movements",
-            align: "left"
-          },
-          xaxis: {
-            type: "datetime"
-          },
-          yaxis: {
-            opposite: true
-          },
-          legend: {
-            horizontalAlign: "left"
-          }
-        };
-      }
-    };
+            data: Vdados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
+                   color: "#5ff569",
 
-    // Solicita os dados iniciais do gráfico
+
+
+             
+
+
+            }, ],
+
+      chart: {
+        type: "line",
+        height: 350,
+        background: '#000f0e',
+        
+      },
+      
+      
+       };   }  };
+
+ // Solicita os dados iniciais do gráfico
     this.binance.getChartData('BTCUSDT').subscribe(
       (dadosIniciais: any[]) => {
         atualizarGraficoComNovosDados(dadosIniciais);
@@ -99,7 +69,16 @@ export class GraficoApexComponent implements OnInit {
       error => {
         console.error('Erro ao obter dados iniciais do gráfico:', error);
       }
-    );
+    ),
+
+
+
+
+
+    
+
+   
+    
 
     // Subscreve-se para receber notificações sobre novos dados da API da Binance
     this.binance.novosDadosDisponiveis.subscribe(
@@ -112,3 +91,4 @@ export class GraficoApexComponent implements OnInit {
     );
   }
 }  
+

@@ -6,7 +6,8 @@ import { HttpClient } from '@angular/common/http';
  providedIn: 'root'
 })
 export class Binanceservico {
-  private apiUrl ='http://localhost:3000/api/getChartData';
+  
+  private apiUrl ='http://localhost:3000/api/getChartData'; 
   novosDadosDisponiveis: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
@@ -17,16 +18,16 @@ export class Binanceservico {
 
     // Solicita os dados da API Binance
     return this.http.get(url).pipe(
-      tap((dados: any) => {
+      tap((Vdados: any) => {
         
         // Emite os novos dados para o componente do gráfico
-        this.notificarNovosDados(dados);
+        this.notificarNovosDados(Vdados);
       })
     );
   }
 
   // Método para notificar sobre novos dados disponíveis
-  private notificarNovosDados(dados: any) {
-    this.novosDadosDisponiveis.next(dados);
+  private notificarNovosDados(Vdados: any) {
+    this.novosDadosDisponiveis.next(Vdados);
   }
 }

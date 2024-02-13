@@ -16,7 +16,7 @@ export class Binanceservico {
   constructor(private http: HttpClient) {}
 
   getChartData(symbol: string): Observable<any> {
-    const url = `${this.apiUrl}?symbol=${symbol}&interval=1s`;
+    const url = `${this.apiUrl}?symbol=${symbol}&interval=2s`;
 
     // Solicita os dados da API Binance
     return this.http.get(url).pipe(

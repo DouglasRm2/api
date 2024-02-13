@@ -18,10 +18,10 @@ async function getChartData(symbol) {
   }
 
   try {
-    const response = await axios.get(`${apiUrl}/klines`, {
+    const response = await axios.get(`${apiUrl}/uiKlines`, {
       params: {
         symbol: symbol,
-        interval: '1m'
+        interval: '2s'
       }
     });
     return response.data;

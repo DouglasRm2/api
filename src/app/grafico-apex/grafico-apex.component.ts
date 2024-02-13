@@ -1,12 +1,22 @@
 
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
+import { ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexLegend, ApexStroke, ApexTitleSubtitle, ApexXAxis, ApexYAxis, ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
 import { Binanceservico } from '../service/grafico-binance.service';
 import { CommonModule } from '@angular/common';
+import { interval } from 'rxjs';
 
- 
-
-
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  stroke: ApexStroke;
+  dataLabels: ApexDataLabels;
+  yaxis: ApexYAxis;
+  title: ApexTitleSubtitle;
+  labels: string[];
+  legend: ApexLegend;
+  subtitle: ApexTitleSubtitle;
+};
 
 @Component({
   selector: 'graficoapex',
@@ -19,49 +29,48 @@ import { CommonModule } from '@angular/common';
 
 
 
+
 export class GraficoApexComponent implements OnInit {
   @ViewChild('chart')
   chart!: ChartComponent;
-  
-  chartOptions: any;
 
-  constructor(private binance: Binanceservico) {}
+  
+  symbol: string = 'BTCUSDT';
+  chartOptions: any;
+  updateSubscription: any;
+
+  constructor(private binance: Binanceservico) { 
+    
+   
+    this.chartOptions = {
+      series: [{
+        name:[],
+        data: [], }],
+
+        chart: {
+        type: 'line',
+        height:  350,
+        width: '100%',
+        zoom: {
+        enabled: true                                                 
+        }
+          },
+            };
+              };
 
   ngOnInit(): void {
-
-
-    
     // Método para atualizar o gráfico com base nos novos dados recebidos
+    const atualizarGraficoComNovosDados = (novosDados: any[]) => {
+      if (novosDados && novosDados.length > 0) {
+        this.chartOptions.series = [{
+          name: 'BTCUSDT',
+          data: novosDados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
+          color: '#5ff569'
+        }];
+      }
+    };
 
-    const atualizarGraficoComNovosDados = (Vdados: any[]) => {
-      if (Vdados && Vdados.length > 0) {
-      
-            
-        this.chartOptions = {
-          series: [{
-            name: [``],
-            
-            data: Vdados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
-                   color: "#5ff569",
-
-
-
-             
-
-
-            }, ],
-
-      chart: {
-        type: "line",
-        height: 350,
-        background: '#000f0e',
-        
-      },
-      
-      
-       };   }  };
-
- // Solicita os dados iniciais do gráfico
+    // Solicita os dados iniciais do gráfico
     this.binance.getChartData('BTCUSDT').subscribe(
       (dadosIniciais: any[]) => {
         atualizarGraficoComNovosDados(dadosIniciais);
@@ -69,16 +78,7 @@ export class GraficoApexComponent implements OnInit {
       error => {
         console.error('Erro ao obter dados iniciais do gráfico:', error);
       }
-    ),
-
-
-
-
-
-    
-
-   
-    
+    );
 
     // Subscreve-se para receber notificações sobre novos dados da API da Binance
     this.binance.novosDadosDisponiveis.subscribe(
@@ -90,5 +90,4 @@ export class GraficoApexComponent implements OnInit {
       }
     );
   }
-}  
-
+}

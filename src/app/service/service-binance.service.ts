@@ -4,10 +4,6 @@ import { Observable } from 'rxjs';
 
 
 
-if (typeof window !== 'undefined') {
-  (window as any).WebSocket = WebSocket;
- }
-
 @Injectable({
  providedIn: 'root'
 })
@@ -19,11 +15,10 @@ export class ServiceBinanceService {
  constructor() { }
 
  getTickerPrice(symbol: string): Observable<any> {
-    const endpoint = `${symbol.toLowerCase()}@ticker`;
-    const wsSubject: WebSocketSubject<any> = webSocket({
-      url: `${this.apiUrl}${endpoint}`,
-      WebSocketCtor: WebSocket
-    });
+  const endpoint = `${symbol.toLowerCase()}@ticker`;
+  const wsSubject: WebSocketSubject<any> = webSocket({
+    url: `${this.apiUrl}${endpoint}`
+  });
 
     return wsSubject.asObservable();
  }

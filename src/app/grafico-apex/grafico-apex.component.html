@@ -1,4 +1,15 @@
-<div *ngIf="chartOptions">
-    <apx-chart [series]="chartOptions.series" [chart]="chartOptions.chart" [xaxis]="chartOptions.xaxis"></apx-chart>
-  </div>
+<div id="chart"
+*ngIf="chartOptions.series &&
+       chartOptions.chart &&
+       chartOptions.dataLabels
+       && chartOptions.stroke">
   
+  <apx-chart
+     #atualizar
+    [series]="chartOptions.series"
+    [chart]="chartOptions.chart"
+    [dataLabels]="chartOptions.dataLabels"
+    [stroke]="chartOptions.stroke"
+    
+  ></apx-chart>
+</div>

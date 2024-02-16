@@ -9,16 +9,16 @@ import { HttpClient } from '@angular/common/http';
 
 export class Binanceservico {
   
-  private apiUrl ='http://localhost:3000/api/getChartData'; 
+  private apiUrl ='http://localhost:3001/buscandodados'; 
   
   novosDadosDisponiveis: Subject<any> = new Subject<any>();
 
   constructor(private http: HttpClient) {}
 
   getChartData(symbol: string): Observable<any> {
-    const url = `${this.apiUrl}?symbol=${symbol}&interval=2s`;
+    const url = `${this.apiUrl}?symbol=${symbol}&interval=5m`;
 
-    // Solicita os dados da API Binance
+    // Solicitando dados para nosso back-end
     return this.http.get(url).pipe(
       tap((dados: any) => {
         // Emite os novos dados para o componente do gráfico

@@ -1,22 +1,13 @@
-
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ApexAxisChartSeries, ApexChart, ApexDataLabels, ApexLegend, ApexStroke, ApexTitleSubtitle, ApexXAxis, ApexYAxis, ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
+import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
 import { Binanceservico } from '../service/grafico-binance.service';
 import { CommonModule } from '@angular/common';
-import { interval } from 'rxjs';
+import { series } from './data';
 
-export type ChartOptions = {
-  series: ApexAxisChartSeries;
-  chart: ApexChart;
-  xaxis: ApexXAxis;
-  stroke: ApexStroke;
-  dataLabels: ApexDataLabels;
-  yaxis: ApexYAxis;
-  title: ApexTitleSubtitle;
-  labels: string[];
-  legend: ApexLegend;
-  subtitle: ApexTitleSubtitle;
-};
+
+ 
+/* codigo abrindo o gráfico */
+
 
 @Component({
   selector: 'graficoapex',
@@ -29,72 +20,128 @@ export type ChartOptions = {
 
 
 
-
 export class GraficoApexComponent implements OnInit {
-  @ViewChild('chart')
+  @ViewChild ('atualizar' )
   chart!: ChartComponent;
-
+  public chartOptions: Partial<ChartComponent> 
   
-  symbol: string = 'BTCUSDT';
-  chartOptions: any;
-  updateSubscription: any;
 
-  constructor(private binance: Binanceservico) { 
-      this.chartOptions = {
-      series: [{
-        name:[],
-        data: [], }],
 
-        chart: {
-        type: 'line',
-        height:  350,
-        width: '100%',
-        zoom: {
-        enabled: true                                                 
+  constructor(private binance: Binanceservico) {
+    this.chartOptions = {
+      series: [
+        {
+          name: "STOCK ABC",
+          data: [],
+          color: "#5ff569",
         }
-          },
-            };
-              };
+    ],
+      chart: {
+          type: "area",
+          height: 350,
+          zoom: {
+          enabled: false
+      }
+    },
+    
+      dataLabels: {
+          enabled: false
+    },
+      stroke: {
+          curve: "straight"
+    },
+
+      title: {
+          text: "Fundamental Analysis of Stocks",
+          align: "left"
+    },
+      subtitle: {
+          text: "Price Movements",
+          align: "left"
+    },
+    labels: series.monthDataSeries1.dates,
+    xaxis: {
+      type: "datetime",
+    },
+      yaxis: {
+          opposite: true
+    },
+      legend: {
+          horizontalAlign: "left"
+    }
+  }
+}
+
+ngOnInit(): void {
+
+
+  this.binance.getChartData('BTCUSDT').subscribe(
+
+    (data: any) => {
+
+    // Atualiza a série de dados com os dados recebidos da API
+    this.chartOptions.series = [
+        { name: `"STOCK ABC"`,
+          data: data, // Aqui você atribui os dados recebidos da API
+          color: "#5ff569",}];
 
 
 
-              ngOnInit(): void {
-                // Solicita os dados iniciais do gráfico
-                this.binance.getChartData('BTCUSDT').subscribe(
-                  (dadosIniciais: any[]) => {
-                    this.atualizarGraficoComNovosDados(dadosIniciais);
-                  },
-                  error => {
-                    console.error('Erro ao obter dados iniciais do gráfico:', error);
-                  }
-                );
-            
-                // Subscreve-se para receber notificações sobre novos dados da API da Binance
-                this.binance.novosDadosDisponiveis.subscribe(
-                  (novosDados: any[]) => {
-                    this.atualizarGraficoComNovosDados(novosDados);
-                  },
-                  error => {
-                    console.error('Erro ao receber novos dados do serviço:', error);
-                  }
-                );
-              }
-            
-              // Método para atualizar o gráfico com base nos novos dados recebidos
-              atualizarGraficoComNovosDados(novosDados: any[]): void {
-                if (novosDados && novosDados.length > 0) {
-                  this.chartOptions = {
-                    series: [{
-                      name: 'BTCUSDT',
-                      data: novosDados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
-                      color: '#5ff569'
-                    }],
-                    chart: {
-                      type: 'line',
-                      height: 350,
-                      background: '#000f0e',
-                    }
-                  };
-                }
-              }
-            }
+      // Após atualizar os dados, você pode chamar o método updateSeries para atualizar o gráfico
+      if (this.chart) {
+        this.chart.updateSeries(this.chartOptions.series);
+      };
+
+      
+    },   
+    (error: any) => {
+      console.error(error);
+    }
+  );
+
+}
+}
+
+
+
+
+
+/*
+
+  // Chamada inicial para buscar dados
+  this.buscarDados();
+  // Atualizar os dados a cada 1 segundo   ----   setInterval(() => { this.buscarDados();}, 1000); 
+   
+  
+buscarDados(): void {
+  
+  const symbol = 'BTCUSDT'; // ou qualquer outro símbolo que você deseje
+  this.binance.getChartData(symbol).subscribe(
+    (dados: any[]) => {
+      console.log('Dados recebidos:', dados); // Verificar a estrutura dos dados recebidos
+
+      // Verificar se existem dados na resposta
+      if (dados && dados.length > 0) {
+        // Extrair os preços dos dados recebidos
+        const preços: number[] = dados.map(item => parseFloat(item[1])); // Extrai o preço (cotação) de cada item
+
+        // Atualizar a série de dados do gráfico com os preços
+        this.chart.updateSeries([{
+          data: preços
+        }], true);
+      } else {
+        console.error('Resposta do servidor vazia ou em formato inesperado.');
+      }
+    },
+    (error: any) => {
+      console.error('Erro ao buscar dados:', error);
+    }
+  );
+ 
+}
+}
+
+
+*/
+
+

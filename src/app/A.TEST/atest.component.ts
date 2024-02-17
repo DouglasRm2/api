@@ -1,186 +1,87 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
-import { Binanceservico } from '../service/grafico-binance.service';
-import { CommonModule } from '@angular/common';
+// eslint-disable-next-line max-len
+import { ApexAxisChartSeries, ApexChart, ApexXAxis, ApexStroke, ApexDataLabels, ApexYAxis, ApexTitleSubtitle, ApexLegend, ChartComponent } from 'ng-apexcharts';
+import { series } from './datos-ejemplo';
 
- 
-/* codigo abrindo o gráfico */
-
-
-@Component({
-  selector: 'graficoapex',
-  standalone: true,
-  imports: [CommonModule,NgxApexchartsModule,],
-  providers:[Binanceservico],
-  templateUrl: './grafico-apex.component.html',
-  styleUrl: './grafico-apex.component.css'
-})
-
-
-
-export class GraficoApexComponent implements OnInit {
-  @ViewChild('chart')
-  chart!: ChartComponent;
-  
-  chartOptions: any;
-
-  constructor(private binance: Binanceservico) {}
-
-  ngOnInit(): void {
-
-
-    
-    // Método para atualizar o gráfico com base nos novos dados recebidos
-
-    const atualizarGraficoComNovosDados = (Vdados: any[]) => {
-      if (Vdados && Vdados.length > 0) {         
-        this.chartOptions = {
-          series: [{
-            name: [``],
-            
-            data: Vdados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
-                   color: "#5ff569",
- }, ],
-
-      chart: {
-        type: "line",
-        height: 350,
-        background: '#000f0e',
-        
-      },
-      
-      
-       };   }  };
-
- // Solicita os dados iniciais do gráfico
-
-    this.binance.getChartData('BTCUSDT').subscribe(
-      (dadosIniciais: any[]) => {
-        atualizarGraficoComNovosDados(dadosIniciais);
-      },
-
-      
-      error => {
-        console.error('Erro ao obter dados iniciais do gráfico:', error);
-      }
-    ),
-
-
-
-
-
-    
-
-   
-    
-
-    // Subscreve-se para receber notificações sobre novos dados da API da Binance
-    this.binance.novosDadosDisponiveis.subscribe(
-      (novosDados: any[]) => {
-        atualizarGraficoComNovosDados(novosDados);
-      },
-      error => {
-        console.error('Erro ao receber novos dados do serviço:', error);
-      }
-    );
-  }
-} 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
--------------------------------------------------------
-
----------------------------------------------------------
-
-
-import { Component, OnInit, ViewChild } from '@angular/core';
-import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
-import { Binanceservico } from '../service/grafico-binance.service';
-import { CommonModule } from '@angular/common';
-
- 
-/* codigo abrindo o gráfico */
-
+export type ChartOptions = {
+  series: ApexAxisChartSeries;
+  chart: ApexChart;
+  xaxis: ApexXAxis;
+  stroke: ApexStroke;
+  dataLabels: ApexDataLabels;
+  yaxis: ApexYAxis;
+  title: ApexTitleSubtitle;
+  labels: string[];
+  legend: ApexLegend;
+  subtitle: ApexTitleSubtitle;
+};
 
 @Component({
-  selector: 'graficoapex',
-  standalone: true,
-  imports: [CommonModule,NgxApexchartsModule,],
-  providers:[Binanceservico],
-  templateUrl: './grafico-apex.component.html',
-  styleUrl: './grafico-apex.component.css'
+  selector: 'app-chart-ejemplo',
+  templateUrl: './chart-ejemplo.component.html',
+  styleUrls: ['./chart-ejemplo.component.scss'],
 })
+export class ChartEjemploComponent implements OnInit {
+  @ViewChild('realTimePricesChart') chart: ChartComponent;
 
+  chartOptions: ChartOptions;
 
-
-export class GraficoApexComponent implements OnInit {
-  @ViewChild('chart')
-  chart!: ChartComponent
-
-  symbol: string = 'BTCUSDT';
-  chartOptions: any;
-
-  constructor(private binance: Binanceservico) {}
-
-  ngOnInit(): void {
-    this.carregarDadosIniciais();
-
-    // Subscreve-se para receber notificações sobre novos dados da API da Binance
-    this.binance.novosDadosDisponiveis.subscribe(
-      (novosDados: any[]) => {
-        this.atualizarGrafico(novosDados);
-      },
-      error => {
-        console.error('Erro ao receber novos dados do serviço:', error);
-      }
-    );
+  constructor() {
   }
 
+  ngOnInit() {
 
-  private carregarDadosIniciais(): void {
-    this.binance.getChartData(this.symbol).subscribe(
-      (dadosIniciais: any[]) => {
-        this.atualizarGrafico(dadosIniciais);
-      },
-      error => {
-        console.error('Erro ao obter dados iniciais do gráfico:', error);
-      }
-    );
-  }
+    //  Llama al evento "resize", actualizando el chart.
+    setTimeout(() => (window as any).dispatchEvent(new Event('resize')), 1);
 
+    //  Llenado de datos en tiempo real
+    const newPrices: number[] = [...series.monthDataSeries1.prices];
   
 
-  private atualizarGrafico(dados: any[]): void {
-    if (dados && dados.length > 0) {
-      this.chartOptions = {
-        series: [{
-          name: '',
-          data: dados.map(item => [new Date(item[0]).getTime(), parseFloat(item[1])]),
-          color: '#5ff569'
-        }],
-        chart: {
-          type: 'line',
-          height: 350,
-          background: '#000f0e'
-        }
-      };
-      // Verifica se o componente do gráfico está inicializado antes de atualizar os dados
-      if (this.chart && this.chart.updateSeries) {
-        this.chart.updateSeries(this.chartOptions.series);
-      } else {
-        console.error('Erro ao atualizar o gráfico: componente ChartComponent não está definido ou não possui o método updateSeries.');
-      }
-    }
-  }}
-    
+    setInterval(() => {
+ 
+
+      const newValue = newPrices[newPrices.length - 1] * (0.5 + Math.random());
+      newPrices.shift();
+      newPrices.push(newValue);
+
+      this.chart.updateSeries([{
+        data: newPrices
+      }], true);
+    }, 1000);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+ngOnInit(): void {
+
+  setTimeout(() => (window as any).dispatchEvent(new Event('resize')), 1);
+
+  const novopreco : number[] = [...series.monthDataSeries1.prices];
+
+  const precoatual = novopreco[novopreco.length -1];
+  novopreco.shift();
+  novopreco.push(precoatual);
+
+ // Busca a série logo de inicio da API
+
+ setInterval(() => {
+
+  const precoatual = novopreco[novopreco.length - 1];
+  novopreco.shift();
+  novopreco.push(precoatual);
+
+  this.chart.updateSeries([{
+    data: novopreco
+  }], true);
+}, 1000);
+  }
+

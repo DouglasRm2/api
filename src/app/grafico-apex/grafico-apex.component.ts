@@ -3,12 +3,11 @@ import { ChartComponent, NgxApexchartsModule } from 'ngx-apexcharts';
 import { Binanceservico } from '../service/grafico-binance.service';
 import { CommonModule } from '@angular/common';
 import { series } from './data';
+import { Subscription, interval } from 'rxjs';
+import ApexCharts from 'apexcharts';
 
 
- 
 /* codigo abrindo o gráfico */
-
-
 @Component({
   selector: 'graficoapex',
   standalone: true,
@@ -18,89 +17,149 @@ import { series } from './data';
   styleUrl: './grafico-apex.component.css'
 })
 
-
-
 export class GraficoApexComponent implements OnInit {
-  @ViewChild ('atualizar' )
+  @ViewChild ('atualizar')
   chart!: ChartComponent;
-  public chartOptions: Partial<ChartComponent> 
+  public chartOptions!: Partial<ChartComponent>; 
+
+
+  intervaloAtualizacao: number = 60000; // intervalo de atualização em milissegundos (por exemplo, 1 minuto)
+  atualizacaoSub!: Subscription;
   
+  constructor(private binance: Binanceservico) {}
 
-
-  constructor(private binance: Binanceservico) {
-    this.chartOptions = {
-      series: [
-        {
-          name: "STOCK ABC",
-          data: [],
-          color: "#5ff569",
-        }
-    ],
-      chart: {
-          type: "area",
-          height: 350,
-          zoom: {
-          enabled: false
+ngOnInit(): void {
+  this.chartOptions = {
+    series: [
+      {
+        name: "STOCK ABC",
+        data: [...series.monthDataSeries1.prices],
+        color: "#5ff569",
       }
-    },
-    
-      dataLabels: {
-          enabled: false
-    },
-      stroke: {
-          curve: "straight"
-    },
-
-      title: {
-          text: "Fundamental Analysis of Stocks",
-          align: "left"
-    },
-      subtitle: {
-          text: "Price Movements",
-          align: "left"
-    },
-    labels: series.monthDataSeries1.dates,
-    xaxis: {
-      type: "datetime",
-    },
-      yaxis: {
-          opposite: true
-    },
-      legend: {
-          horizontalAlign: "left"
+  ],
+    chart: {
+        type: "area",
+        height: 350,
+        zoom: {
+        enabled: false
     }
+  },
+  
+    dataLabels: {
+        enabled: false
+  },
+    stroke: {
+        curve: "straight"
+  },
+
+    title: {
+        text: "Fundamental Analysis of Stocks",
+        align: "left"
+  },
+    subtitle: {
+        text: "Price Movements",
+        align: "left"
+  },
+  labels: series.monthDataSeries1.dates,
+  xaxis: {
+    type: "datetime",
+  },
+    yaxis: {
+        opposite: true
+  },
+    legend: {
+        horizontalAlign: "left"
+  }
+}
+  setTimeout(() => (window as any).dispatchEvent(new Event('resize')), 1);
+ // Busca a série logo de inicio na API
+
+
+this.binance.getChartData('BTCUSDT','1d').subscribe(
+ (preco) => {
+    this.chartOptions.series = [
+     { name: `BTCUSDT`,
+        data: preco, // Aqui você atribui os dados recebidos da API
+          color: "#5ff569",  
+           }
+
+           
+        ];
+
+        this.chart.updateSeries([{
+          data: preco
+        }])
+      }
+
+      
+    );
   }
 }
 
-ngOnInit(): void {
-
-
-  this.binance.getChartData('BTCUSDT').subscribe(
-
-    (data: any) => {
-
-    // Atualiza a série de dados com os dados recebidos da API
-    this.chartOptions.series = [
-        { name: `"STOCK ABC"`,
-          data: data, // Aqui você atribui os dados recebidos da API
-          color: "#5ff569",}];
 
 
 
-      // Após atualizar os dados, você pode chamar o método updateSeries para atualizar o gráfico
-      if (this.chart) {
-        this.chart.updateSeries(this.chartOptions.series);
-      };
 
-      
-    },   
-    (error: any) => {
-      console.error(error);
-    }
-  );
 
-}
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* this.chart.updateSeries([{
+
+          data: preco
+        }], true);
+        
+        
+        */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
